@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DoSJE Sentinel</title>
+<style>
+:root{--primary:#2457d6;--bg:#f4f7fb;--text:#172033;--muted:#667085;--danger:#d92d20;--warn:#f79009;--ok:#039855}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Arial,sans-serif;background:#dfe6f2;color:var(--text)}
+.app{width:min(430px,100vw);min-height:100vh;margin:auto;background:var(--bg);position:relative;overflow:hidden}
+.screen{display:none;min-height:100vh;padding-bottom:78px}.screen.active{display:block}
+.header{background:linear-gradient(135deg,#2457d6,#173b98);color:white;padding:24px 20px 28px;border-radius:0 0 26px 26px}
+.header h1{margin:0 0 6px;font-size:25px}.header p{margin:0;opacity:.85;font-size:13px}
+.content{padding:18px}.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 16px #152a5512}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stat b{display:block;font-size:25px;margin-top:6px}.label{font-size:12px;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.pill{padding:6px 9px;border-radius:999px;font-size:11px;font-weight:700}.high{background:#fee4e2;color:#b42318}.medium{background:#fff4d6;color:#b54708}.low{background:#dcfae6;color:#027a48}.btn{border:0;border-radius:12px;padding:13px 16px;font-weight:700;cursor:pointer;font-size:14px}.primary{background:var(--primary);color:white}.secondary{background:#eaf0ff;color:var(--primary)}.full{width:100%}
+.input{width:100%;padding:13px;border:1px solid #d0d5dd;border-radius:11px;margin:7px 0 13px;font-size:14px}.title{font-size:18px;font-weight:800;margin:4px 0 14px}.item{padding:13px 0;border-bottom:1px solid #eaecf0}.item:last-child{border-bottom:0}.icon{font-size:25px}
+.bottom{position:fixed;bottom:0;width:min(430px,100vw);background:#fff;border-top:1px solid #e4e7ec;display:flex;justify-content:space-around;padding:10px 6px;z-index:5}.nav{border:0;background:none;color:#667085;font-size:11px;cursor:pointer}.nav.active{color:var(--primary);font-weight:800}
+.login{min-height:100vh;padding:55px 24px;background:linear-gradient(160deg,#173b98,#2457d6 55%,#eef4ff);color:white}.logo{width:70px;height:70px;border-radius:20px;background:#fff;color:#2457d6;display:grid;place-items:center;font-size:34px;font-weight:900;margin-bottom:22px}.login h1{font-size:32px;margin:0 0 7px}.login p{opacity:.85;margin-bottom:35px}.loginbox{background:#fff;padding:20px;border-radius:20px;color:var(--text)}.loginbox .btn{margin-top:4px}.camera{height:220px;border-radius:16px;background:linear-gradient(135deg,#202938,#667085);display:grid;place-items:center;color:#fff;font-size:42px;margin-bottom:14px}.gps{background:#e9f8ef;color:#027a48;padding:12px;border-radius:12px;font-size:13px;font-weight:700}.ai{border-left:5px solid var(--danger)}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:85px;background:#101828;color:#fff;padding:11px 15px;border-radius:10px;font-size:12px;display:none;z-index:10}
+</style>
+</head>
+<body>
+<div class="app">
+
+<section id="login" class="screen active">
+  <div class="login">
+    <div class="logo">S</div><h1>DoSJE Sentinel</h1><p>Smart Real-Time Monitoring & Inspection</p>
+    <div class="loginbox">
+      <label class="label">Email</label><input class="input" id="email" placeholder="officer@example.com">
+      <label class="label">Password</label><input class="input" type="password" placeholder="••••••••">
+      <button class="btn primary full" onclick="login()">Login</button>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard" class="screen">
+  <div class="header"><h1>Officer Dashboard</h1><p>Welcome back, Inspection Officer</p></div>
+  <div class="content">
+    <div class="stats">
+      <div class="card stat"><span class="label">Projects</span><b>120</b></div>
+      <div class="card stat"><span class="label">Inspections</span><b>35</b></div>
+      <div class="card stat"><span class="label">Pending</span><b>12</b></div>
+      <div class="card stat"><span class="label">High Risk</span><b style="color:#d92d20">5</b></div>
+    </div>
+    <div class="title">Recent Alerts</div>
+    <div class="card">
+      <div class="item row"><div><b>ABC Foundation</b><div class="label">Attendance anomaly detected</div></div><span class="pill high">HIGH</span></div>
+      <div class="item row"><div><b>Community Care NGO</b><div class="label">Inspection due</div></div><span class="pill medium">MEDIUM</span></div>
+      <div class="item row"><div><b>Hope Centre</b><div class="label">All checks normal</div></div><span class="pill low">LOW</span></div>
+    </div>
+    <button class="btn primary full" onclick="show('projects')">View Projects</button>
+  </div>
+  <nav></nav>
+</section>
+
+<section id="projects" class="screen">
+  <div class="header"><h1>Projects</h1><p>Registered project monitoring</p></div>
+  <div class="content">
+    <div class="card" onclick="show('project')"><div class="row"><div><b>ABC Foundation</b><div class="label">Chennai • Active</div></div><span class="pill medium">MEDIUM</span></div></div>
+    <div class="card"><div class="row"><div><b>Community Care NGO</b><div class="label">Coimbatore • Active</div></div><span class="pill low">LOW</span></div></div>
+    <div class="card"><div class="row"><div><b>Hope Centre</b><div class="label">Madurai • Active</div></div><span class="pill high">HIGH</span></div></div>
+  </div>
+  <nav></nav>
+</section>
+
+<section id="project" class="screen">
+  <div class="header"><h1>Project Details</h1><p>ABC Foundation</p></div>
+  <div class="content">
+    <div class="card">
+      <div class="row"><b>ABC Foundation</b><span class="pill medium">MEDIUM RISK</span></div>
+      <div class="item"><span class="label">Location</span><br>Chennai, Tamil Nadu</div>
+      <div class="item"><span class="label">Status</span><br>Active</div>
+    </div>
+    <div class="card"><div class="title">Live Monitoring</div><div class="camera">📹 LIVE CCTV</div><button class="btn secondary full" onclick="toast('CCTV stream opened in demo mode')">Open CCTV</button></div>
+    <button class="btn primary full" onclick="show('inspection')">🎲 Assign Inspection</button>
+  </div><nav></nav>
+</section>
+
+<section id="inspection" class="screen">
+  <div class="header"><h1>Smart Inspection</h1><p>ABC Foundation • Inspector: Ravi</p></div>
+  <div class="content">
+    <div class="card">
+      <div class="row"><div><b>Random Assignment</b><div class="label">Assignment generated by system</div></div><span class="icon">🎲</span></div>
+    </div>
+    <div class="gps">📍 GPS VERIFIED — Inspector is at the registered project location</div>
+    <div class="card" style="margin-top:14px">
+      <div class="title">Inspection Checklist</div>
+      <label class="label">Staff available?</label><select class="input"><option>Yes</option><option>No</option></select>
+      <label class="label">Beneficiaries present?</label><select class="input"><option>Yes</option><option>No</option></select>
+      <label class="label">Facilities available?</label><select class="input"><option>Yes</option><option>No</option></select>
+      <button class="btn secondary full" onclick="show('evidence')">Continue to Evidence</button>
+    </div>
+  </div><nav></nav>
+</section>
+
+<section id="evidence" class="screen">
+  <div class="header"><h1>Evidence Capture</h1><p>Secure inspection evidence</p></div>
+  <div class="content">
+    <div class="camera" onclick="toast('Camera opened — demo photo captured')">📷<br><small>Tap to Capture</small></div>
+    <div class="card">
+      <div class="row"><span>Timestamp</span><b>Verified</b></div>
+      <div class="row"><span>GPS</span><b style="color:#027a48">Verified</b></div>
+      <div class="row"><span>Inspector ID</span><b>INS-1042</b></div>
+    </div>
+    <button class="btn primary full" onclick="show('ai')">Run AI Analysis</button>
+  </div><nav></nav>
+</section>
+
+<section id="ai" class="screen">
+  <div class="header"><h1>AI Analysis</h1><p>Decision-support only • Human review required</p></div>
+  <div class="content">
+    <div class="card ai">
+      <div class="label">Risk Score</div><div style="font-size:38px;font-weight:900;color:#d92d20">72 / 100</div>
+      <span class="pill high">HIGH RISK</span>
+    </div>
+    <div class="card">
+      <div class="title">Detected Signals</div>
+      <div class="item">⚠ Attendance anomaly</div>
+      <div class="item">⚠ Evidence mismatch signal</div>
+      <div class="item">✓ GPS and timestamp verified</div>
+    </div>
+    <button class="btn primary full" onclick="show('report')">Generate Report</button>
+  </div><nav></nav>
+</section>
+
+<section id="report" class="screen">
+  <div class="header"><h1>Inspection Report</h1><p>Inspection completed</p></div>
+  <div class="content">
+    <div class="card">
+      <div class="item row"><span>Project</span><b>ABC Foundation</b></div>
+      <div class="item row"><span>Inspector</span><b>Ravi</b></div>
+      <div class="item row"><span>GPS</span><b style="color:#027a48">✓ Verified</b></div>
+      <div class="item row"><span>Evidence</span><b style="color:#027a48">✓ Uploaded</b></div>
+      <div class="item row"><span>AI Risk</span><span class="pill high">HIGH</span></div>
+    </div>
+    <button class="btn primary full" onclick="toast('Report submitted successfully');setTimeout(()=>show('dashboard'),900)">Submit Report</button>
+  </div><nav></nav>
+</section>
+
+<div id="toast" class="toast"></div>
+</div>
+<script>
+const screens=['dashboard','projects','project','inspection','evidence','ai','report'];
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active'); if(id!=='login') addNav(id)}
+function login(){show('dashboard')}
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
+function addNav(active){
+ document.querySelectorAll('nav').forEach(n=>n.innerHTML=`<button class="nav ${active==='dashboard'?'active':''}" onclick="show('dashboard')">⌂<br>Home</button><button class="nav ${active==='projects'||active==='project'?'active':''}" onclick="show('projects')">▣<br>Projects</button><button class="nav ${['inspection','evidence','ai','report'].includes(active)?'active':''}" onclick="show('inspection')">✓<br>Inspect</button>`);
+}
+</script>
+</body>
+</html>
